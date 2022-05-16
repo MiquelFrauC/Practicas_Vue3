@@ -4,12 +4,13 @@
     <input type="text" v-model="search">
     <p>search term - {{ search }}</p>
     <div v-for="name in matchingNames" :key="name">{{ name }}</div>
+    <button @click="handleClick">Stop Watching</button>
     
   </div>
 </template>
 
 <script>
-import { ref, computed } from 'vue'
+import { ref, computed, watch, watchEffect } from 'vue'
 
 export default {
   name: 'HomeView',
@@ -19,13 +20,26 @@ export default {
 
     const names = ref(["Mario", "Yoshi", "Luigi", "Toad", "Bowser", "Koopa", "Peach"])
 
+    const stopWatch = watch(search, () => {
+      console.log("Watch function ran")
+    })
+
+    const stopEffect = watchEffect(() => {
+      console.log("WatchEffect function ran", search.value)
+    })
+
     // Usar valores computados para permitir filtrar la lista de nombres en función
     // de un término de búsqueda especificado por el usuario.
     const matchingNames = computed(() => {
       return names.value.filter((name) => name.includes(search.value))
     })
 
-    return { names, search, matchingNames }
+    const handleClick = () => {
+      stopWatch()
+      stopEffect()
+    }
+
+    return { names, search, matchingNames, handleClick }
 
     /* // Template Reference.
     // const p = ref(null)
